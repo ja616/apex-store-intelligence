@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: apex-store-intelligence-api
+    runtime: python
+    buildCommand: pip install -r requirements.txt && python -c "from apex.models.database import init_db; init_db()" && python populate_sample.py
+    startCommand: python -m uvicorn apex.api.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        value: sqlite:///apex_store.db
