@@ -1,0 +1,33 @@
+# Python caches
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Pytest / Coverage
+.pytest_cache/
+.coverage
+.coverage.*
+
+# Databases
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+
+# Video storage (review videos are large binaries)
+CCTV Footage/
+*.mp4
+*.avi
+*.mkv
+
+# Environment variables
+.env
+.venv
+venv/
+env/
+
+# IDE / OS metadata
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,32 @@
+{
+  "store_id": "brigade-road-bangalore",
+  "cameras": {
+    "CAM1": {"name": "Entry Gate", "zone": "entry", "position": [0, 0]},
+    "CAM2": {"name": "Floor Zone A", "zone": "floor_a", "position": [1, 0]},
+    "CAM3": {"name": "Floor Zone B", "zone": "floor_b", "position": [2, 0]},
+    "CAM4": {"name": "Billing Counter A", "zone": "billing", "position": [3, 0]},
+    "CAM5": {"name": "Billing Counter B", "zone": "billing", "position": [3, 1]}
+  },
+  "transitions": [
+    {"from": "CAM1", "to": "CAM2", "min_seconds": 5, "max_seconds": 120},
+    {"from": "CAM2", "to": "CAM1", "min_seconds": 5, "max_seconds": 120},
+    {"from": "CAM2", "to": "CAM3", "min_seconds": 10, "max_seconds": 180},
+    {"from": "CAM3", "to": "CAM2", "min_seconds": 10, "max_seconds": 180},
+    {"from": "CAM3", "to": "CAM4", "min_seconds": 10, "max_seconds": 120},
+    {"from": "CAM3", "to": "CAM5", "min_seconds": 10, "max_seconds": 120},
+    {"from": "CAM4", "to": "CAM5", "min_seconds": 5, "max_seconds": 60},
+    {"from": "CAM5", "to": "CAM4", "min_seconds": 5, "max_seconds": 60},
+    {"from": "CAM4", "to": "CAM3", "min_seconds": 10, "max_seconds": 120},
+    {"from": "CAM5", "to": "CAM3", "min_seconds": 10, "max_seconds": 120},
+    {"from": "CAM1", "to": "CAM4", "min_seconds": 30, "max_seconds": 900},
+    {"from": "CAM1", "to": "CAM5", "min_seconds": 30, "max_seconds": 900}
+  ],
+  "impossible_transitions": [
+    {"from": "CAM1", "to": "CAM4", "max_seconds": 15},
+    {"from": "CAM1", "to": "CAM5", "max_seconds": 15},
+    {"from": "CAM4", "to": "CAM1", "max_seconds": 15},
+    {"from": "CAM5", "to": "CAM1", "max_seconds": 15}
+  ],
+  "store_hours": {"open": "10:00", "close": "21:00"},
+  "timezone": "Asia/Kolkata"
+}

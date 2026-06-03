@@ -1,0 +1,65 @@
+{
+  "store_id": "brigade-road-bangalore",
+  "cameras": [
+    {
+      "camera_id": "CAM1",
+      "name": "Entry Gate Camera",
+      "zone": "entry",
+      "rtsp_url": "rtsp://192.168.1.101:554/stream",
+      "file_path": "CCTV Footage/CAM 1.mp4",
+      "fps": 25,
+      "resolution": [1920, 1080],
+      "is_entry": true,
+      "is_exit": true,
+      "is_billing": false
+    },
+    {
+      "camera_id": "CAM2",
+      "name": "Floor Zone A Camera",
+      "zone": "floor_a",
+      "rtsp_url": "rtsp://192.168.1.102:554/stream",
+      "file_path": "CCTV Footage/CAM 2.mp4",
+      "fps": 25,
+      "resolution": [1920, 1080],
+      "is_entry": false,
+      "is_exit": false,
+      "is_billing": false
+    },
+    {
+      "camera_id": "CAM3",
+      "name": "Floor Zone B Camera",
+      "zone": "floor_b",
+      "rtsp_url": "rtsp://192.168.1.103:554/stream",
+      "file_path": "CCTV Footage/CAM 3.mp4",
+      "fps": 25,
+      "resolution": [1920, 1080],
+      "is_entry": false,
+      "is_exit": false,
+      "is_billing": false
+    },
+    {
+      "camera_id": "CAM4",
+      "name": "Billing Counter A Camera",
+      "zone": "billing",
+      "rtsp_url": "rtsp://192.168.1.104:554/stream",
+      "file_path": "CCTV Footage/CAM 4.mp4",
+      "fps": 25,
+      "resolution": [1920, 1080],
+      "is_entry": false,
+      "is_exit": false,
+      "is_billing": true
+    },
+    {
+      "camera_id": "CAM5",
+      "name": "Billing Counter B Camera",
+      "zone": "billing",
+      "rtsp_url": "rtsp://192.168.1.105:554/stream",
+      "file_path": "CCTV Footage/CAM 5.mp4",
+      "fps": 25,
+      "resolution": [1920, 1080],
+      "is_entry": false,
+      "is_exit": false,
+      "is_billing": true
+    }
+  ]
+}
