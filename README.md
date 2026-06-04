@@ -145,62 +145,73 @@ tests/test_session_builder.py::TestStaffExclusion::test_staff_events_produce_sta
 
 ---
 
-## 📹 How to Process Videos and Load POS Data
+## 📹 How to Process Videos & Load POS Data
 
-### 1. Load the POS Transaction CSV
-To load store transactions for conversion correlation:
+APEX contains an end-to-end video pipeline that processes raw CCTV feeds, runs bounding-box tracking and Re-ID, and outputs event telemetry.
+
+### 1. Ingest a New Video Clip
+To verify the offline video processing pipeline with an unseen video clip:
+1. Locate your video file (e.g. `CCTV Footage/CAM 1.mp4`).
+2. Run the provided command-line ingestion tool:
+   ```bash
+   # Usage: python ingest_video.py <path_to_video> <camera_id> [max_frames]
+   python ingest_video.py "CCTV Footage/CAM 1.mp4" CAM1 200
+   ```
+   *(Setting `200` limits processing to the first 200 frames for a quick validation run).*
+3. **What happens**: The CLI tool uploads the file to the FastAPI backend, initiates a background processing job, and prints real-time status and visitor counts.
+4. **Verification**: Refresh the React dashboard at `http://localhost:5173`. The newly generated events and visitor sessions will appear under **Live Visitors** and the **Overview** charts.
+
+### 2. Load POS Transactions CSV
+To load transaction logs for spatio-temporal conversion attribution:
 ```bash
-# Import the provided csv into the DB
+# Upload and attribute POS transactions
 curl -X POST "http://127.0.0.1:8000/api/v1/process/video" \
   -F "file=@Brigade_Bangalore_10_April_26 (1)bc6219c.csv" \
   -F "camera_id=CSV" \
   -F "store_id=brigade-road-bangalore"
 ```
-Or run the Python attribution engine directly:
-```python
-from sqlalchemy.orm import Session
-from apex.models.database import SessionLocal
-from apex.analytics.conversion import ConversionAttributionEngine
 
-engine = ConversionAttributionEngine()
-db: Session = SessionLocal()
-count = engine.load_transactions(
-    "Brigade_Bangalore_10_April_26 (1)bc6219c.csv",
-    store_id="brigade-road-bangalore",
-    db=db,
-)
-print(f"Loaded {count} transactions")
-```
+---
 
-### 2. Ingest Video Bounding Boxes / Events
-To process unseen video footage:
+## 🧪 Step-by-Step Feature Validation Guide
+
+Follow this guide to inspect and test all platform capabilities:
+
+### Step 1: Run Automated Tests
+Verify pipeline correctness and edge cases:
 ```bash
-curl -X POST "http://127.0.0.1:8000/api/v1/process/video" \
-  -F "file=@CCTV Footage/CAM 1.mp4" \
-  -F "camera_id=CAM1" \
-  -F "store_id=brigade-road-bangalore"
+python -m pytest
 ```
+* **What to check**: All **57 tests** pass successfully, validating staff detection, transition timings, and conversion math.
 
-To ingest pre-calculated tracking event lines dynamically:
+### Step 2: Seed the Sandbox Database
+If starting from an empty state, populate the database with complete customer, staff, and transaction data:
 ```bash
-curl -X POST "http://127.0.0.1:8000/api/v1/events/ingest" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "events": [
-      {
-        "event_id": "e51b4326-6678-47df-8dfc-ce567f953d55",
-        "store_id": "brigade-road-bangalore",
-        "camera_id": "CAM1",
-        "visitor_id": "96215801-70fc-4ca2-aa87-da484d15275b",
-        "event_type": "PERSON_ENTERED",
-        "timestamp": "2026-04-10T12:00:00",
-        "confidence": 0.85,
-        "identity_confidence": 0.80,
-        "is_staff": false
-      }
-    ]
-  }'
+python populate_sample.py
 ```
+* **What to check**: Inserts 25 visitor profiles (including 3 staff members) and attributes POS invoices.
+
+### Step 3: Explore the Dashboard Tabs
+Open `http://localhost:5173` and explore these core features:
+
+1. **Executive Overview**: 
+   * *Feature*: Aggregated conversion rate and revenue metrics.
+   * *Tester Check*: Verify the **System Confidence Overview** strip at the bottom of the page. It details exactly how many sessions are high/low confidence.
+2. **Live Visitors**: 
+   * *Feature*: real-time customer and staff tracking grid.
+   * *Tester Check*: Toggle the **Showing Staff** filter. Watch the grid filter out employee profiles behaviorally classified by duration and camera zones.
+3. **Conversion Funnel**: 
+   * *Feature*: Stage drop-offs (Entered $\to$ Browsed $\to$ Billing $\to$ Purchased).
+   * *Tester Check*: Hover over the stages to view the custom confidence intervals propagated for each stage.
+4. **Store Heatmap**: 
+   * *Feature*: Traffic density and check-out bottlenecks.
+   * *Tester Check*: Verify average checkout speeds and alert flags on high-occupancy zones.
+5. **Journey Explorer**: 
+   * *Feature*: Sequential camera paths.
+   * *Tester Check*: Review the top 5 shopper routes and their specific conversion metrics to see how floor interactions impact checkouts.
+6. **Identity Monitor**: 
+   * *Feature*: Cross-camera Re-ID matching logs.
+   * *Tester Check*: Inspect the **Matching Explanation** column, which details why two separate camera appearances were merged (appearance similarity + topological constraints).
 
 ---
 
